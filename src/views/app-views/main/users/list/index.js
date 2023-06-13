@@ -1,18 +1,46 @@
 import React, { Component } from "react";
-import { Card, Table, Tag, Tooltip, message, Button } from "antd";
+import { Card, Table, Tag, Tooltip, message, Button, notification } from "antd";
 import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
 import moment from "moment";
 import UserView from "./UserView";
 import AvatarStatus from "components/shared-components/AvatarStatus";
-import userData from "./temp.json";
-import { userAdapter } from "./adapters";
+import { usersAdapter } from "./adapters";
 import { NO_DATA } from "constants/ViewConstant";
+import userService from "services/UserService";
 
 export class UserList extends Component {
   state = {
-    users: userAdapter(userData),
+    users: [],
     userProfileVisible: false,
     selectedUser: null,
+    isLoading: false,
+  };
+
+  componentDidMount = async () => {
+    try {
+      this.setState({ isLoading: true });
+
+      const users = await userService.getUsers();
+
+      if (!users || !Array.isArray(users)) {
+        throw new Error(`Received invalid users: ${users}.`);
+      }
+
+      this.setState({
+        users: usersAdapter(users),
+      });
+    } catch (e) {
+      notification.error({
+        message:
+          "Не удалось получить список клиентов. Попробуйте перезагрузить страницу.",
+        duration: 0,
+      });
+      console.error(e);
+    } finally {
+      this.setState({
+        isLoading: false,
+      });
+    }
   };
 
   deleteUser = (userId) => {
@@ -37,7 +65,7 @@ export class UserList extends Component {
   };
 
   render() {
-    const { users, userProfileVisible, selectedUser } = this.state;
+    const { users, userProfileVisible, selectedUser, isLoading } = this.state;
 
     const tableColumns = [
       {
@@ -134,7 +162,12 @@ export class UserList extends Component {
     ];
     return (
       <Card bodyStyle={{ padding: "0px" }}>
-        <Table columns={tableColumns} dataSource={users} rowKey="id" />
+        <Table
+          columns={tableColumns}
+          dataSource={users}
+          rowKey="id"
+          loading={isLoading}
+        />
         <UserView
           data={selectedUser}
           visible={userProfileVisible}

@@ -1,4 +1,4 @@
-const userAdapter = (apiData) => {
+const usersAdapter = (apiData) => {
   return apiData.map((data) => ({
     id: data.id.toString(),
     name: data.name,
@@ -20,4 +20,4 @@ const userAdapter = (apiData) => {
   }));
 };
 
-export { userAdapter };
+export { usersAdapter };
