@@ -17,6 +17,10 @@ const Catalog = (props) => {
         path={`${match.url}/collections`}
         component={lazy(() => import(`./collections`))}
       />
+      <Route
+        path={`${match.url}/combo`}
+        component={lazy(() => import(`./combo`))}
+      />
       <Redirect from={`${match.url}`} to={`${match.url}/products`} />
     </Switch>
   );
