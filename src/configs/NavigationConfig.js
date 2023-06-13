@@ -154,6 +154,42 @@ const mainNavTree = [
   },
 ];
 
-const navigationConfig = [...mainNavTree];
+const systemNavTree = [
+  {
+    key: "system",
+    path: `${APP_PREFIX_PATH}/system`,
+    title: "sidenav.system",
+    icon: DashboardOutlined,
+    breadcrumb: true,
+    submenu: [
+      {
+        key: "system-settings",
+        path: `${APP_PREFIX_PATH}/system/settings`,
+        title: "sidenav.system.settings",
+        icon: DashboardOutlined,
+        breadcrumb: true,
+        submenu: [],
+      },
+      {
+        key: "system-mobile-app",
+        path: `${APP_PREFIX_PATH}/system/mobile-app`,
+        title: "sidenav.system.mobileApp",
+        icon: DashboardOutlined,
+        breadcrumb: true,
+        submenu: [],
+      },
+      {
+        key: "system-logs",
+        path: `${APP_PREFIX_PATH}/system/logs`,
+        title: "sidenav.system.logs",
+        icon: DashboardOutlined,
+        breadcrumb: true,
+        submenu: [],
+      },
+    ],
+  },
+];
+
+const navigationConfig = [...mainNavTree, ...systemNavTree];
 
 export default navigationConfig;

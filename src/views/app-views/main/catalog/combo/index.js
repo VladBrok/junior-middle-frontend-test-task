@@ -1,5 +1,4 @@
 const Combo = () => {
-  console.log("combo");
   return <div>Combo</div>;
 };
 
