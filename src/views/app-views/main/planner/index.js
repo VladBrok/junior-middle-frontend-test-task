@@ -1,7 +1,6 @@
 import { saveAs } from "file-saver";
-import { Image, Button } from "antd";
+import { Image, Button, Upload } from "antd";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
-import plannerTables from "assets/data/planner-tables.data.json";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { TABLE_DRAG_ITEM } from "constants/PlannerConstant";
 import "./index.css";
@@ -11,6 +10,7 @@ import { DndProvider, useDrag, useDrop, useDragLayer } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 // TODO: split all components into multiple files (don't forget about moving css)
+
 // TODO: move to .css
 const layerStyles = {
   position: "fixed",
@@ -217,7 +217,9 @@ const Board = ({ children, onDrop }) => {
 };
 
 const Planner = () => {
-  const [availableTables, setAvailableTables] = useState(plannerTables);
+  const [availableTables, setAvailableTables] = useState(() =>
+    Utils.getPlannerTables()
+  );
   const [boardTables, setBoardTables] = useState([]);
 
   const moveTable = (oldIdx, newIdx) => {
@@ -279,12 +281,45 @@ const Planner = () => {
     saveAs(blob, fileName);
   };
 
+  const handleImportChange = async ({ file }) => {
+    // TODO: handle ALL edge cases
+
+    const text = await file.originFileObj.text();
+    console.log(text); // TODO: remove
+    const parsed = JSON.parse(text);
+    console.log(parsed); // TODO: remove
+
+    setAvailableTables(() =>
+      Utils.getPlannerTables().filter(
+        (table) => !parsed.find((x) => x.id === table.id)
+      )
+    );
+    setBoardTables(() => [
+      ...parsed.map((table) => ({
+        ...table,
+        image: Utils.getTableImage(table.typeId),
+      })),
+    ]);
+  };
+
   return (
     <>
       <div className="mb-3">
-        <Button type="primary" ghost icon={<UploadOutlined />} className="mr-3">
-          Импорт
-        </Button>
+        <Upload
+          accept=".json"
+          onChange={handleImportChange}
+          showUploadList={false}
+          customRequest={() => {}}
+        >
+          <Button
+            type="primary"
+            ghost
+            icon={<UploadOutlined />}
+            className="mr-3"
+          >
+            Импорт
+          </Button>
+        </Upload>
         <Button
           type="primary"
           ghost

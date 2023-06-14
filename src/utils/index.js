@@ -1,3 +1,5 @@
+import plannerTables from "assets/data/planner-tables.data.json";
+
 class Utils {
   /**
    * Get first character from first & last sentences of a username
@@ -280,6 +282,19 @@ class Utils {
       containerRect.top < targetRect.bottom &&
       containerRect.left < targetRect.right
     );
+  }
+
+  static getTableImage(typeId) {
+    return typeId === "1"
+      ? "/img/planner/table-dark.png"
+      : "/img/planner/table-light.png";
+  }
+
+  static getPlannerTables() {
+    return plannerTables.map((table) => ({
+      ...table,
+      image: this.getTableImage(table.typeId),
+    }));
   }
 }
 

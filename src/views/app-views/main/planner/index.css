@@ -7,7 +7,7 @@
 .planner__list-container {
   display: inline-flex;
   border: 1px solid black;
-  height: calc(var(--planner-table-size) + 2);
+  height: var(--planner-table-size);
   min-width: 100%;
 }
 
