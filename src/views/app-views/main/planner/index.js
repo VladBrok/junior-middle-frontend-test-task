@@ -27,7 +27,7 @@ function PlannerTable({
       };
     },
     hover(item, monitor) {
-      if (!ref.current) {
+      if (!ref.current || item.isOnBoard) {
         return;
       }
 
@@ -62,7 +62,7 @@ function PlannerTable({
 
   const [{ isDragging }, drag, preview] = useDrag({
     type: TABLE_DRAG_ITEM,
-    item: () => ({ id, index, ref: ref.current }),
+    item: () => ({ id, index, ref: ref.current, isOnBoard }),
     collect(monitor) {
       return {
         isDragging: monitor.isDragging(),
@@ -98,7 +98,8 @@ const Board = ({ children, onDrop }) => {
     () => ({
       accept: TABLE_DRAG_ITEM,
       drop(item, monitor) {
-        const tableRect = item.ref.getBoundingClientRect();
+        console.log("board drop");
+
         const boardRect = ref.current.getBoundingClientRect();
 
         // TODO: instead of monitor.getClientOffset we should use tableRect.top & tableRect.left, but they are not updated. Find a way to deal with it
@@ -112,12 +113,6 @@ const Board = ({ children, onDrop }) => {
           left > boardRect.width;
 
         if (isOutsideOfBoard) {
-          console.log(
-            top,
-            left,
-            boardRect.height - tableRect.height,
-            boardRect.width - tableRect.width
-          );
           return;
         }
 
@@ -125,7 +120,7 @@ const Board = ({ children, onDrop }) => {
         return undefined;
       },
     }),
-    []
+    [onDrop]
   );
 
   return (
@@ -151,16 +146,27 @@ const Planner = () => {
   };
 
   const handleBoardDrop = (tableId, top, left) => {
-    console.log("drop", tableId, top, left);
-
     const isFromAvailable = availableTables.some(
       (table) => table.id === tableId
     );
 
     if (isFromAvailable) {
       const table = availableTables.find((table) => table.id === tableId);
-      setAvailableTables((prev) => prev.filter((x) => x !== table));
+      setAvailableTables((prev) => prev.filter((x) => x.id !== tableId));
       setBoardTables((prev) => [...prev, { ...table, top, left }]);
+    }
+
+    const isFromBoard = boardTables.some((table) => table.id === tableId);
+    Utils.assert(
+      !isFromAvailable || !isFromBoard,
+      `The table with id ${tableId} is both on the board and in the list of available tables.`
+    );
+
+    if (isFromBoard) {
+      const table = boardTables.find((table) => table.id === tableId);
+      setBoardTables((prev) =>
+        prev.map((x) => (x === table ? { ...x, top, left } : x))
+      );
     }
   };
 
