@@ -8,6 +8,8 @@ import { usersAdapter } from "./adapters";
 import { NO_DATA } from "constants/ViewConstant";
 import userService from "services/UserService";
 import "./index.css";
+import { withRouter } from "react-router-dom/cjs/react-router-dom.min";
+import { APP_PREFIX_PATH } from "configs/AppConfig";
 
 export class UserList extends Component {
   state = {
@@ -66,7 +68,7 @@ export class UserList extends Component {
   };
 
   handleUserClick = (id) => {
-    console.log(id); // TODO: remove
+    this.props.history.push(`${APP_PREFIX_PATH}/main/users/${id}/edit`);
   };
 
   render() {
@@ -188,4 +190,4 @@ export class UserList extends Component {
   }
 }
 
-export default UserList;
+export default withRouter(UserList);

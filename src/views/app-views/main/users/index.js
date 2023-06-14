@@ -13,6 +13,10 @@ const Users = (props) => {
         path={`${match.url}/groups`}
         component={lazy(() => import(`./groups`))}
       />
+      <Route
+        path={`${match.url}/:id/edit`}
+        component={lazy(() => import(`./edit`))}
+      />
       <Redirect from={`${match.url}`} to={`${match.url}/list`} />
     </Switch>
   );
