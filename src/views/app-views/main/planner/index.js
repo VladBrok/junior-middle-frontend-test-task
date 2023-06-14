@@ -123,7 +123,6 @@ function PlannerTable({
     item: () => ({
       id,
       index,
-      ref: ref.current,
       isOnBoard,
       description,
       image,
