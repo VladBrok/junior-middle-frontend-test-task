@@ -11,4 +11,10 @@ userService.getUsers = async function () {
   ).data;
 };
 
+userService.getUserById = async function (id) {
+  const users = await userService.getUsers();
+  const found = users.find((user) => user.id.toString() === id.toString());
+  return found || null;
+};
+
 export default userService;

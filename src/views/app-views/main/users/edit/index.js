@@ -9,25 +9,52 @@ import {
   Col,
   Upload,
   notification,
+  Skeleton,
+  Empty,
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { ROW_GUTTER } from "constants/ThemeConstant";
 import Flex from "components/shared-components/Flex";
 import "./index.css";
+import userService from "services/UserService";
+import { userAdapter } from "./adapters";
+import { withRouter } from "react-router-dom/cjs/react-router-dom.min";
 
 export class EditProfile extends Component {
   state = {
-    avatarUrl: "/img/avatars/thumb-6.jpg",
-    name: "Charlie Howard",
-    email: "charlie.howard@themenate.com",
-    userName: "Charlie",
-    dateOfBirth: null,
-    phoneNumber: "+44 (1532) 135 7921",
-    website: "",
-    address: "",
-    city: "",
-    postcode: "",
+    isLoading: false,
+    isUserFound: true,
     isSaving: false,
+  };
+
+  componentDidMount = async () => {
+    try {
+      this.setState({ isLoading: true });
+
+      const id = this.props.match.params.id;
+      const user = await userService.getUserById(id);
+
+      if (!user) {
+        this.setState({ isUserFound: false });
+        return;
+      }
+
+      this.setState({
+        ...userAdapter(user),
+        isUserFound: true,
+      });
+    } catch (e) {
+      notification.error({
+        message:
+          "Не удалось получить данные о клиенте. Попробуйте перезагрузить страницу.",
+        duration: 0,
+      });
+      console.error(e);
+    } finally {
+      this.setState({
+        isLoading: false,
+      });
+    }
   };
 
   getBase64(img, callback) {
@@ -37,6 +64,7 @@ export class EditProfile extends Component {
   }
 
   render() {
+    // TODO: use user service
     const onFinish = (values) => {
       this.setState({ isSaving: true });
 
@@ -54,13 +82,13 @@ export class EditProfile extends Component {
         });
 
         this.setState({ isSaving: false });
+        this.props.history.push("..");
         notification.success({ message: "Данные сохранены.", duration: 2 });
       }, 1000);
     };
 
-    // TODO: remove ?
     const onFinishFailed = (errorInfo) => {
-      console.log("Failed:", errorInfo);
+      console.error("Failed:", errorInfo);
     };
 
     const onUploadAavater = (info) => {
@@ -89,132 +117,147 @@ export class EditProfile extends Component {
       postcode,
       avatarUrl,
       isSaving,
+      isLoading,
+      isUserFound,
     } = this.state;
 
     return (
       <>
-        <Flex
-          alignItems="center"
-          mobileFlex={false}
-          className="text-center text-md-left"
-        >
-          <Avatar size={90} src={avatarUrl} icon={<UserOutlined />} />
-          <div className="ml-md-3 mt-md-0 mt-3">
-            <Upload onChange={onUploadAavater} showUploadList={false}>
-              <Button type="primary">Сменить фото</Button>
-            </Upload>
-            <Button className="ml-2" onClick={onRemoveAvater}>
-              Удалить
-            </Button>
-          </div>
-        </Flex>
-        <div className="mt-4">
-          <Form
-            name="basicInformation"
-            layout="vertical"
-            initialValues={{
-              name: name,
-              email: email,
-              username: userName,
-              dateOfBirth: dateOfBirth,
-              phoneNumber: phoneNumber,
-              website: website,
-              address: address,
-              city: city,
-              postcode: postcode,
+        {isLoading ? (
+          <Skeleton
+            avatar
+            paragraph={{
+              rows: 4,
             }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            className="user-edit__form"
-            validateTrigger="onSubmit"
-          >
-            <Row>
-              <Col xs={24} sm={24} md={24} lg={20}>
-                <Row gutter={ROW_GUTTER}>
-                  <Col xs={24} sm={24} md={12}>
-                    <Form.Item
-                      label="ФИО"
-                      name="name"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Укажите ФИО",
-                        },
-                      ]}
-                    >
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={12}>
-                    <Form.Item
-                      label="Имя пользователя"
-                      name="username"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Укажите имя пользователя",
-                        },
-                      ]}
-                    >
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={12}>
-                    <Form.Item
-                      label="Email"
-                      name="email"
-                      rules={[
-                        {
-                          required: true,
-                          type: "email",
-                          message: "Укажите корректный email",
-                        },
-                      ]}
-                    >
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={12}>
-                    <Form.Item label="Дата рождения" name="dateOfBirth">
-                      <DatePicker className="w-100" />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={12}>
-                    <Form.Item label="Номер телефона" name="phoneNumber">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={12}>
-                    <Form.Item label="Сайт" name="website">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={24}>
-                    <Form.Item label="Адрес" name="address">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={12}>
-                    <Form.Item label="Город" name="city">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={12}>
-                    <Form.Item label="Почтовый индекс" name="postcode">
-                      <Input />
-                    </Form.Item>
+          />
+        ) : !isUserFound ? (
+          <Empty description={<p>Пользователь не найден.</p>} />
+        ) : (
+          <>
+            <Flex
+              alignItems="center"
+              mobileFlex={false}
+              className="text-center text-md-left"
+            >
+              <Avatar size={90} src={avatarUrl} icon={<UserOutlined />} />
+              <div className="ml-md-3 mt-md-0 mt-3">
+                <Upload onChange={onUploadAavater} showUploadList={false}>
+                  <Button type="primary">Сменить фото</Button>
+                </Upload>
+                <Button className="ml-2" onClick={onRemoveAvater}>
+                  Удалить
+                </Button>
+              </div>
+            </Flex>
+            <div className="mt-4">
+              <Form
+                name="basicInformation"
+                layout="vertical"
+                initialValues={{
+                  name: name,
+                  email: email,
+                  username: userName,
+                  dateOfBirth: dateOfBirth,
+                  phoneNumber: phoneNumber,
+                  website: website,
+                  address: address,
+                  city: city,
+                  postcode: postcode,
+                }}
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
+                className="user-edit__form"
+                validateTrigger="onSubmit"
+              >
+                <Row>
+                  <Col xs={24} sm={24} md={24} lg={20}>
+                    <Row gutter={ROW_GUTTER}>
+                      <Col xs={24} sm={24} md={12}>
+                        <Form.Item
+                          label="ФИО"
+                          name="name"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Укажите ФИО",
+                            },
+                          ]}
+                        >
+                          <Input />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={24} md={12}>
+                        <Form.Item
+                          label="Имя пользователя"
+                          name="username"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Укажите имя пользователя",
+                            },
+                          ]}
+                        >
+                          <Input />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={24} md={12}>
+                        <Form.Item
+                          label="Email"
+                          name="email"
+                          rules={[
+                            {
+                              required: true,
+                              type: "email",
+                              message: "Укажите корректный email",
+                            },
+                          ]}
+                        >
+                          <Input />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={24} md={12}>
+                        <Form.Item label="Дата рождения" name="dateOfBirth">
+                          <DatePicker className="w-100" />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={24} md={12}>
+                        <Form.Item label="Номер телефона" name="phoneNumber">
+                          <Input />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={24} md={12}>
+                        <Form.Item label="Сайт" name="website">
+                          <Input />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={24} md={24}>
+                        <Form.Item label="Адрес" name="address">
+                          <Input />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={24} md={12}>
+                        <Form.Item label="Город" name="city">
+                          <Input />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={24} md={12}>
+                        <Form.Item label="Почтовый индекс" name="postcode">
+                          <Input />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                    <Button type="primary" htmlType="submit" loading={isSaving}>
+                      Сохранить
+                    </Button>
                   </Col>
                 </Row>
-                <Button type="primary" htmlType="submit" loading={isSaving}>
-                  Сохранить
-                </Button>
-              </Col>
-            </Row>
-          </Form>
-        </div>
+              </Form>
+            </div>
+          </>
+        )}
       </>
     );
   }
 }
 
-export default EditProfile;
+export default withRouter(EditProfile);
