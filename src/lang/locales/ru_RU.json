@@ -2,6 +2,7 @@
   "home": "Home",
 
   "sidenav.main": "Основные",
+  "sidenav.main.planner": "Планировщик",
   "sidenav.main.dashboard": "Дашборд",
   "sidenav.main.catalog": "Каталог",
   "sidenav.main.catalog.products": "Товары",

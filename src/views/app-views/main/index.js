@@ -6,6 +6,10 @@ const Main = (props) => {
   return (
     <Switch>
       <Route
+        path={`${match.url}/planner`}
+        component={lazy(() => import(`./planner`))}
+      />
+      <Route
         path={`${match.url}/dashboard`}
         component={lazy(() => import(`./dashboard`))}
       />
