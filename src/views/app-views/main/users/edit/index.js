@@ -25,13 +25,18 @@ export class EditProfile extends Component {
     isLoading: false,
     isUserFound: true,
     isSaving: false,
+    isError: false,
   };
+
+  getId() {
+    return this.props.match.params.id;
+  }
 
   componentDidMount = async () => {
     try {
       this.setState({ isLoading: true });
 
-      const id = this.props.match.params.id;
+      const id = this.getId();
       const user = await userService.getUserById(id);
 
       if (!user) {
@@ -42,6 +47,7 @@ export class EditProfile extends Component {
       this.setState({
         ...userAdapter(user),
         isUserFound: true,
+        isError: false,
       });
     } catch (e) {
       notification.error({
@@ -50,6 +56,7 @@ export class EditProfile extends Component {
         duration: 0,
       });
       console.error(e);
+      this.setState({ isError: true });
     } finally {
       this.setState({
         isLoading: false,
@@ -64,27 +71,24 @@ export class EditProfile extends Component {
   }
 
   render() {
-    // TODO: use user service
-    const onFinish = (values) => {
-      this.setState({ isSaving: true });
+    const onFinish = async (values) => {
+      try {
+        this.setState({ isSaving: true });
 
-      setTimeout(() => {
-        this.setState({
-          name: values.name,
-          email: values.email,
-          userName: values.userName,
-          dateOfBirth: values.dateOfBirth,
-          phoneNumber: values.phoneNumber,
-          website: values.website,
-          address: values.address,
-          city: values.city,
-          postcode: values.postcode,
-        });
+        const id = this.getId();
+        await userService.putUser(id, values);
 
-        this.setState({ isSaving: false });
         this.props.history.push("..");
         notification.success({ message: "Данные сохранены.", duration: 2 });
-      }, 1000);
+      } catch (e) {
+        notification.error({
+          message: "Не удалось сохранить данные. Попробуйте позже.",
+          duration: 0,
+        });
+        console.error(e);
+      } finally {
+        this.setState({ isSaving: false });
+      }
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -119,6 +123,7 @@ export class EditProfile extends Component {
       isSaving,
       isLoading,
       isUserFound,
+      isError,
     } = this.state;
 
     return (
@@ -130,6 +135,8 @@ export class EditProfile extends Component {
               rows: 4,
             }}
           />
+        ) : isError ? (
+          <Empty description={<p>Нет данных.</p>} />
         ) : !isUserFound ? (
           <Empty description={<p>Пользователь не найден.</p>} />
         ) : (
