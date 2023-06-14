@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Table, Tag, Tooltip, message, Button, notification } from "antd";
+import { Card, Table, Tag, Tooltip, Button, notification } from "antd";
 import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
 import moment from "moment";
 import UserView from "./UserView";
@@ -7,6 +7,7 @@ import AvatarStatus from "components/shared-components/AvatarStatus";
 import { usersAdapter } from "./adapters";
 import { NO_DATA } from "constants/ViewConstant";
 import userService from "services/UserService";
+import "./index.css";
 
 export class UserList extends Component {
   state = {
@@ -47,7 +48,7 @@ export class UserList extends Component {
     this.setState({
       users: this.state.users.filter((item) => item.id !== userId),
     });
-    message.success({ content: `Deleted user ${userId}`, duration: 2 });
+    notification.success({ message: `Deleted user ${userId}`, duration: 2 });
   };
 
   showUserProfile = (userInfo) => {
@@ -64,6 +65,10 @@ export class UserList extends Component {
     });
   };
 
+  handleUserClick = (id) => {
+    console.log(id); // TODO: remove
+  };
+
   render() {
     const { users, userProfileVisible, selectedUser, isLoading } = this.state;
 
@@ -72,7 +77,10 @@ export class UserList extends Component {
         title: "Клиент",
         dataIndex: "name",
         render: (_, record) => (
-          <div className="d-flex">
+          <div
+            className="d-flex user-list__user-cell"
+            onClick={() => this.handleUserClick(record.id)}
+          >
             <AvatarStatus
               src={record.img}
               name={record.name}
