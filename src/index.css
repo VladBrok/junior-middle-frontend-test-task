@@ -1,3 +1,7 @@
+:root {
+  --planner-table-size: 170px;
+}
+
 .loading.cover-content {
   position: absolute;
   left: 50%;

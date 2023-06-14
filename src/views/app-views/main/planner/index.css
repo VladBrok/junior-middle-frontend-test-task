@@ -1,0 +1,15 @@
+.planner__available-tables {
+  overflow-y: hidden;
+  overflow-x: auto;
+  height: var(--planner-table-size);
+}
+
+.planner__list-container .ant-list-items {
+  display: inline-flex;
+}
+
+.planner__list-item {
+  width: var(--planner-table-size);
+  height: var(--planner-table-size);
+  background-color: yellow; /* TODO: remove */
+}

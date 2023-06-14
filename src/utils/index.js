@@ -236,6 +236,38 @@ class Utils {
       setTimeout(resolve, ms);
     });
   }
+
+  static assert(condition, message) {
+    if (!condition) {
+      throw new Error(`Assertion Error: ${message}`);
+    }
+  }
+
+  static moveItem(items, oldIdx, newIdx) {
+    if (oldIdx < 0 || oldIdx >= items.length) {
+      throw new Error(`oldIdx ${oldIdx} is outside of range.`);
+    }
+
+    if (newIdx < 0 || newIdx >= items.length) {
+      throw new Error(`newIdx ${newIdx} is outside of range.`);
+    }
+
+    if (oldIdx === newIdx) {
+      return items;
+    }
+
+    const result = items.slice();
+    const item = items[oldIdx];
+    result.splice(oldIdx, 1);
+    result.splice(newIdx, 0, item);
+
+    this.assert(
+      items.length === result.length,
+      `${items.length} !== ${result.length}`
+    );
+
+    return result;
+  }
 }
 
 export default Utils;
