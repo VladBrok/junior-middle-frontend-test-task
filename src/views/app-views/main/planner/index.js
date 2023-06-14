@@ -1,4 +1,5 @@
-import { Image } from "antd";
+import { Image, Button } from "antd";
+import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import plannerTables from "assets/data/planner-tables.data.json";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { TABLE_DRAG_ITEM } from "constants/PlannerConstant";
@@ -265,6 +266,20 @@ const Planner = () => {
 
   return (
     <>
+      <div className="mb-3">
+        <Button type="primary" ghost icon={<UploadOutlined />} className="mr-3">
+          Импорт
+        </Button>
+        <Button
+          type="primary"
+          ghost
+          icon={<DownloadOutlined />}
+          disabled={!boardTables.length}
+        >
+          Экспорт
+        </Button>
+      </div>
+
       <DndProvider backend={HTML5Backend}>
         <CustomDragLayer />
 
