@@ -6,6 +6,8 @@
 
 .planner__list-container {
   display: inline-flex;
+  border: 1px solid black;
+  min-width: 100%;
 }
 
 .planner__item {

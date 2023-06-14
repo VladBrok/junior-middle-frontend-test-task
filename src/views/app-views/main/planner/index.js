@@ -68,7 +68,6 @@ export const CustomDragLayer = () => {
 function PlannerTable({
   id,
   index,
-  description,
   image,
   move,
   isOnBoard = false,
@@ -124,7 +123,6 @@ function PlannerTable({
       id,
       index,
       isOnBoard,
-      description,
       image,
       move,
     }),
@@ -179,6 +177,7 @@ const Board = ({ children, onDrop }) => {
       const isOutsideOfBoard =
         top < 0 || top > boardRect.height || left < 0 || left > boardRect.width;
 
+      // TODO: also check for intersection with others
       if (isOutsideOfBoard) {
         return;
       }
@@ -235,6 +234,8 @@ const Planner = () => {
     }
   };
 
+  // TODO: make list container droppable (to drop from board to available)
+
   return (
     <>
       <DndProvider backend={HTML5Backend}>
@@ -245,7 +246,6 @@ const Planner = () => {
             <PlannerTable
               key={table.id}
               id={table.id}
-              description={table.description}
               image={table.image}
               index={index}
               move={moveTable}
@@ -258,7 +258,6 @@ const Planner = () => {
             <PlannerTable
               key={table.id}
               id={table.id}
-              description={table.description}
               image={table.image}
               index={index}
               move={moveTable}

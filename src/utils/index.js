@@ -269,6 +269,7 @@ class Utils {
     return result;
   }
 
+  // TODO: remove / fix
   static intersect(container, target) {
     const containerRect = container.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();

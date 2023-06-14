@@ -2,25 +2,21 @@
   {
     "id": "1",
     "typeId": "1",
-    "description": "стол",
     "image": ""
   },
   {
     "id": "2",
     "typeId": "1",
-    "description": "стол",
     "image": ""
   },
   {
     "id": "3",
     "typeId": "2",
-    "description": "стол",
     "image": ""
   },
   {
     "id": "4",
     "typeId": "2",
-    "description": "стол",
     "image": ""
   }
 ]
