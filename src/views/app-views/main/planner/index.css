@@ -14,7 +14,16 @@
 .planner__item {
   width: var(--planner-table-size);
   height: var(--planner-table-size);
-  background-color: yellow; /* TODO: remove */
+  padding: 10px;
+}
+
+.planner__item .ant-image-mask {
+  display: none;
+}
+
+.planner__item .ant-image-img,
+.planner__item .ant-image {
+  height: 100%;
 }
 
 .planner__item:hover {

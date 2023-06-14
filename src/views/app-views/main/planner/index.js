@@ -1,3 +1,4 @@
+import { Image } from "antd";
 import plannerTables from "assets/data/planner-tables.data.json";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { TABLE_DRAG_ITEM } from "constants/PlannerConstant";
@@ -164,7 +165,7 @@ function PlannerTable({
       className={`planner__item ${isOnBoard ? "planner__item-board" : ""}`}
       style={{ opacity, top, left }}
     >
-      {id}
+      <Image src={image} />
     </div>
   );
 }
@@ -175,8 +176,6 @@ const Board = ({ children, onDrop }) => {
   const [, drop] = useDrop({
     accept: TABLE_DRAG_ITEM,
     drop(item, monitor) {
-      console.log("board drop");
-
       // TODO: this is weird (happens when hovering)
       // TODO: mb force this component to rerender so that getClientOffset updates ???????
       if (!monitor.getClientOffset()) {

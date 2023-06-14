@@ -2,21 +2,21 @@
   {
     "id": "1",
     "typeId": "1",
-    "image": ""
+    "image": "/img/planner/table-dark.png"
   },
   {
     "id": "2",
-    "typeId": "1",
-    "image": ""
+    "typeId": "2",
+    "image": "/img/planner/table-light.png"
   },
   {
     "id": "3",
-    "typeId": "2",
-    "image": ""
+    "typeId": "1",
+    "image": "/img/planner/table-dark.png"
   },
   {
     "id": "4",
     "typeId": "2",
-    "image": ""
+    "image": "/img/planner/table-light.png"
   }
 ]
