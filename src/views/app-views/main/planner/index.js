@@ -7,6 +7,7 @@ import Utils from "utils";
 import { DndProvider, useDrag, useDrop, useDragLayer } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
+// TODO: split all components into multiple files (don't forget about moving css)
 // TODO: move to .css
 const layerStyles = {
   position: "fixed",
@@ -64,8 +65,6 @@ export const CustomDragLayer = () => {
     </div>
   );
 };
-
-// TODO: split all components into multiple files (don't forget about css)
 
 function AvailableTables({ children, onDrop }) {
   const [, drop] = useDrop({
@@ -181,7 +180,6 @@ const Board = ({ children, onDrop }) => {
       // TODO: this is weird (happens when hovering)
       // TODO: mb force this component to rerender so that getClientOffset updates ???????
       if (!monitor.getClientOffset()) {
-        console.log("bruh"); // TODO: remove
         return;
       }
 
