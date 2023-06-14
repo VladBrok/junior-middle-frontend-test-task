@@ -65,6 +65,23 @@ export const CustomDragLayer = () => {
   );
 };
 
+// TODO: split all components into multiple files (don't forget about css)
+
+function AvailableTables({ children, onDrop }) {
+  const [, drop] = useDrop({
+    accept: TABLE_DRAG_ITEM,
+    drop(item) {
+      onDrop(item);
+    },
+  });
+
+  return (
+    <div ref={drop} className="planner__list-container">
+      {children}
+    </div>
+  );
+}
+
 function PlannerTable({
   id,
   index,
@@ -209,6 +226,21 @@ const Planner = () => {
     setAvailableTables(tables);
   };
 
+  const handleAvailableListDrop = (tableProps) => {
+    if (!tableProps.isOnBoard) {
+      return;
+    }
+
+    const boardTable = boardTables.find((x) => x.id === tableProps.id);
+    Utils.assert(
+      boardTable,
+      `Table with id ${tableProps.id} is not found in boardTables.`
+    );
+
+    setBoardTables((prev) => prev.filter((x) => x.id !== tableProps.id));
+    setAvailableTables((prev) => [...prev, boardTable]);
+  };
+
   const handleBoardDrop = (tableId, top, left) => {
     const isFromAvailable = availableTables.some(
       (table) => table.id === tableId
@@ -234,14 +266,12 @@ const Planner = () => {
     }
   };
 
-  // TODO: make list container droppable (to drop from board to available)
-
   return (
     <>
       <DndProvider backend={HTML5Backend}>
         <CustomDragLayer />
 
-        <div className="planner__list-container">
+        <AvailableTables onDrop={handleAvailableListDrop}>
           {availableTables.map((table, index) => (
             <PlannerTable
               key={table.id}
@@ -251,7 +281,7 @@ const Planner = () => {
               move={moveTable}
             />
           ))}
-        </div>
+        </AvailableTables>
 
         <Board onDrop={handleBoardDrop}>
           {boardTables.map((table, index) => (
