@@ -4,7 +4,7 @@
   height: var(--planner-table-size);
 }
 
-.planner__list-container .ant-list-items {
+.planner__list-container {
   display: inline-flex;
 }
 
@@ -14,8 +14,8 @@
   background-color: yellow; /* TODO: remove */
 }
 
-.planner__board-item {
-  position: absolute;
+.planner__item:hover {
+  cursor: grab;
 }
 
 .planner__board {
