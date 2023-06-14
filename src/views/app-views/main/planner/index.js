@@ -1,3 +1,4 @@
+import { saveAs } from "file-saver";
 import { Image, Button } from "antd";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import plannerTables from "assets/data/planner-tables.data.json";
@@ -264,6 +265,20 @@ const Planner = () => {
     }
   };
 
+  const handleExportClick = () => {
+    const data = boardTables.map((table) => ({
+      id: table.id,
+      typeId: table.typeId,
+      top: table.top,
+      left: table.left,
+    }));
+    const fileName = "layout.json";
+    const blob = new Blob([JSON.stringify(data)], {
+      type: "application/json",
+    });
+    saveAs(blob, fileName);
+  };
+
   return (
     <>
       <div className="mb-3">
@@ -275,6 +290,7 @@ const Planner = () => {
           ghost
           icon={<DownloadOutlined />}
           disabled={!boardTables.length}
+          onClick={handleExportClick}
         >
           Экспорт
         </Button>
