@@ -50,7 +50,10 @@ export class UserList extends Component {
     this.setState({
       users: this.state.users.filter((item) => item.id !== userId),
     });
-    notification.success({ message: `Deleted user ${userId}`, duration: 2 });
+    notification.success({
+      message: `Пользователь с id ${userId} удален.`,
+      duration: 2,
+    });
   };
 
   showUserProfile = (userInfo) => {

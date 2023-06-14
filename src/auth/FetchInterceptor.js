@@ -7,7 +7,7 @@ const service = axios.create({
   timeout: 60000,
 });
 
-const ARTIFICIAL_API_DELAY_MS = 500;
+const ARTIFICIAL_API_DELAY_MS = 1000;
 
 service.interceptors.request.use(async (config) => {
   await Utils.delay(ARTIFICIAL_API_DELAY_MS);
