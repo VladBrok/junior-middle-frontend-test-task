@@ -18,6 +18,10 @@
   cursor: grab;
 }
 
+.planner__item-board {
+  position: absolute;
+}
+
 .planner__board {
   background-color: black;
   width: var(--planner-board-width);
