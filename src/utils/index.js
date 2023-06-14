@@ -271,7 +271,7 @@ class Utils {
 
   static intersect(container, target) {
     const containerRect = container.getBoundingClientRect();
-    const targetRect = container.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
 
     return (
       containerRect.bottom > targetRect.top &&

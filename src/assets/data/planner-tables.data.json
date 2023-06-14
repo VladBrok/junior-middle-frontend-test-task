@@ -1,25 +1,25 @@
 [
   {
-    "key": "1",
     "id": "1",
+    "typeId": "1",
     "description": "стол",
     "image": ""
   },
   {
-    "key": "2",
-    "id": "1",
-    "description": "стол",
-    "image": ""
-  },
-  {
-    "key": "3",
     "id": "2",
+    "typeId": "1",
     "description": "стол",
     "image": ""
   },
   {
-    "key": "4",
-    "id": "2",
+    "id": "3",
+    "typeId": "2",
+    "description": "стол",
+    "image": ""
+  },
+  {
+    "id": "4",
+    "typeId": "2",
     "description": "стол",
     "image": ""
   }
