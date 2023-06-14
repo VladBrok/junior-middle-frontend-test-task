@@ -7,6 +7,64 @@ import Utils from "utils";
 import { DndProvider, useDrag, useDrop, useDragLayer } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
+// TODO: move to .css
+const layerStyles = {
+  position: "fixed",
+  pointerEvents: "none",
+  zIndex: 100,
+  left: 0,
+  top: 0,
+  width: "100%",
+  height: "100%",
+};
+
+function getItemStyles(initialOffset, currentOffset) {
+  if (!initialOffset || !currentOffset) {
+    return {
+      display: "none",
+    };
+  }
+  let { x, y } = currentOffset;
+
+  const transform = `translate(${x}px, ${y}px)`;
+  return {
+    transform,
+    WebkitTransform: transform,
+  };
+}
+
+export const CustomDragLayer = () => {
+  const { itemType, isDragging, item, initialOffset, currentOffset } =
+    useDragLayer((monitor) => ({
+      item: monitor.getItem(),
+      itemType: monitor.getItemType(),
+      initialOffset: monitor.getInitialSourceClientOffset(),
+      currentOffset: monitor.getSourceClientOffset(),
+      isDragging: monitor.isDragging(),
+    }));
+
+  function renderItem() {
+    switch (itemType) {
+      case TABLE_DRAG_ITEM:
+        return <PlannerTable {...item} />;
+      default:
+        return null;
+    }
+  }
+
+  if (!isDragging) {
+    return null;
+  }
+
+  return (
+    <div style={layerStyles}>
+      <div style={getItemStyles(initialOffset, currentOffset)}>
+        {renderItem()}
+      </div>
+    </div>
+  );
+};
+
 function PlannerTable({
   id,
   index,
@@ -62,7 +120,15 @@ function PlannerTable({
 
   const [{ isDragging }, drag, preview] = useDrag({
     type: TABLE_DRAG_ITEM,
-    item: () => ({ id, index, ref: ref.current, isOnBoard }),
+    item: () => ({
+      id,
+      index,
+      ref: ref.current,
+      isOnBoard,
+      description,
+      image,
+      move,
+    }),
     collect(monitor) {
       return {
         isDragging: monitor.isDragging(),
@@ -70,10 +136,9 @@ function PlannerTable({
     },
   });
 
-  // TODO
-  // useEffect(() => {
-  //   preview(getEmptyImage(), { captureDraggingState: true });
-  // }, []);
+  useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, [preview]);
 
   drag(drop(ref));
 
@@ -94,34 +159,35 @@ function PlannerTable({
 const Board = ({ children, onDrop }) => {
   const ref = useRef();
 
-  const [, drop] = useDrop(
-    () => ({
-      accept: TABLE_DRAG_ITEM,
-      drop(item, monitor) {
-        console.log("board drop");
+  const [, drop] = useDrop({
+    accept: TABLE_DRAG_ITEM,
+    drop(item, monitor) {
+      console.log("board drop");
 
-        const boardRect = ref.current.getBoundingClientRect();
+      // TODO: this is weird (happens when hovering)
+      // TODO: mb force this component to rerender so that getClientOffset updates ???????
+      if (!monitor.getClientOffset()) {
+        console.log("bruh"); // TODO: remove
+        return;
+      }
 
-        // TODO: instead of monitor.getClientOffset we should use tableRect.top & tableRect.left, but they are not updated. Find a way to deal with it
+      const boardRect = ref.current.getBoundingClientRect();
 
-        const top = monitor.getClientOffset().y - boardRect.top;
-        const left = monitor.getClientOffset().x - boardRect.left;
-        const isOutsideOfBoard =
-          top < 0 ||
-          top > boardRect.height ||
-          left < 0 ||
-          left > boardRect.width;
+      // TODO: instead of monitor.getClientOffset we should use tableRect.top & tableRect.left, but they are not updated. Find a way to deal with it
 
-        if (isOutsideOfBoard) {
-          return;
-        }
+      const top = monitor.getClientOffset().y - boardRect.top;
+      const left = monitor.getClientOffset().x - boardRect.left;
+      const isOutsideOfBoard =
+        top < 0 || top > boardRect.height || left < 0 || left > boardRect.width;
 
-        onDrop(item.id, top, left);
-        return undefined;
-      },
-    }),
-    [onDrop]
-  );
+      if (isOutsideOfBoard) {
+        return;
+      }
+
+      onDrop(item.id, top, left);
+      return undefined;
+    },
+  });
 
   return (
     <div
@@ -173,6 +239,8 @@ const Planner = () => {
   return (
     <>
       <DndProvider backend={HTML5Backend}>
+        <CustomDragLayer />
+
         <div className="planner__list-container">
           {availableTables.map((table, index) => (
             <PlannerTable
