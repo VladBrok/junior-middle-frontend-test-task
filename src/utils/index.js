@@ -268,6 +268,18 @@ class Utils {
 
     return result;
   }
+
+  static intersect(container, target) {
+    const containerRect = container.getBoundingClientRect();
+    const targetRect = container.getBoundingClientRect();
+
+    return (
+      containerRect.bottom > targetRect.top &&
+      containerRect.right > targetRect.left &&
+      containerRect.top < targetRect.bottom &&
+      containerRect.left < targetRect.right
+    );
+  }
 }
 
 export default Utils;

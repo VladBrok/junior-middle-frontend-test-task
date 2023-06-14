@@ -8,8 +8,21 @@
   display: inline-flex;
 }
 
-.planner__list-item {
+.planner__item {
   width: var(--planner-table-size);
   height: var(--planner-table-size);
   background-color: yellow; /* TODO: remove */
+}
+
+.planner__board-item {
+  position: absolute;
+}
+
+.planner__board {
+  background-color: black;
+  width: var(--planner-board-width);
+  height: var(--planner-board-height);
+  margin: 0 auto;
+  margin-top: 25px;
+  position: relative;
 }

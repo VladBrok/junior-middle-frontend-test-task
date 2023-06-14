@@ -1,5 +1,7 @@
 :root {
   --planner-table-size: 170px;
+  --planner-board-width: 700px;
+  --planner-board-height: 500px;
 }
 
 .loading.cover-content {
