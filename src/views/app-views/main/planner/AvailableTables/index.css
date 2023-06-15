@@ -1,0 +1,6 @@
+.available-tables__container {
+  display: inline-flex;
+  border: 1px solid black;
+  height: var(--planner-table-size);
+  min-width: 100%;
+}

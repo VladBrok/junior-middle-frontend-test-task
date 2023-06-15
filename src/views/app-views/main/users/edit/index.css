@@ -1,0 +1,12 @@
+.user-edit__form .ant-form-item-row {
+  gap: 6px;
+}
+
+.user-edit__form .ant-form-item-label {
+  padding-top: 8px;
+  padding-bottom: 0;
+}
+
+.user-edit__form .ant-form-item-explain-error {
+  color: #ff6b72;
+}

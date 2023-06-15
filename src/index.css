@@ -1,3 +1,9 @@
+:root {
+  --planner-table-size: 170px;
+  --planner-board-width: 700px;
+  --planner-board-height: 500px;
+}
+
 .loading.cover-content {
   position: absolute;
   left: 50%;
@@ -14,4 +20,10 @@
 }
 .loading .ant-spin {
   color: #3e79f7;
+}
+li {
+  list-style: none;
+}
+.ant-breadcrumb ol {
+  display: flex;
 }

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1",
+    "typeId": "1",
+    "image": "/img/planner/table-dark.png"
+  },
+  {
+    "id": "2",
+    "typeId": "2",
+    "image": "/img/planner/table-light.png"
+  },
+  {
+    "id": "3",
+    "typeId": "1",
+    "image": "/img/planner/table-dark.png"
+  },
+  {
+    "id": "4",
+    "typeId": "2",
+    "image": "/img/planner/table-light.png"
+  }
+]
