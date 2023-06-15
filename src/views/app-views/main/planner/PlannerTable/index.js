@@ -9,7 +9,6 @@ const PlannerTable = ({
   id,
   index,
   image,
-  move,
   isOnBoard = false,
   top = 0,
   left = 0,
@@ -23,7 +22,6 @@ const PlannerTable = ({
       index,
       isOnBoard,
       image,
-      move,
       el: ref.current,
     }),
     collect(monitor) {
