@@ -45,7 +45,7 @@ const Main = (props) => {
         path={`${match.url}/mailings`}
         component={lazy(() => import(`./mailings`))}
       />
-      <Redirect from={`${match.url}`} to={`${match.url}/dashboard`} />
+      <Redirect from={`${match.url}`} to={`${match.url}/planner`} />
     </Switch>
   );
 };
