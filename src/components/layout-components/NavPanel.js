@@ -27,15 +27,17 @@ export class NavPanel extends Component {
             <SettingOutlined className="nav-icon mr-0" />
           </Menu.Item>
         </Menu>
-        <Drawer
-          title="Theme Config"
-          placement="right"
-          width={350}
-          onClose={this.onClose}
-          open={this.state.visible}
-        >
-          <ThemeConfigurator />
-        </Drawer>
+        {this.state.visible && (
+          <Drawer
+            title="Theme Config"
+            placement="right"
+            width={350}
+            onClose={this.onClose}
+            open={this.state.visible}
+          >
+            <ThemeConfigurator />
+          </Drawer>
+        )}
       </>
     );
   }
