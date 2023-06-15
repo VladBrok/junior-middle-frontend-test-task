@@ -283,6 +283,28 @@ class Utils {
       image: this.getTableImage(table.typeId),
     }));
   }
+
+  static validateParsedPlannerData(parsed) {
+    if (!Array.isArray(parsed)) {
+      throw new Error(`${parsed} is not an array.`);
+    }
+
+    const areTypesValid = parsed.every(
+      (x) =>
+        typeof x.id === "string" &&
+        typeof x.typeId === "string" &&
+        typeof x.left === "number" &&
+        typeof x.top === "number"
+    );
+    if (!areTypesValid) {
+      throw new Error(`${parsed} has invalid property types.`);
+    }
+
+    const idsSet = new Set(parsed.map((x) => x.id));
+    if (idsSet.size !== parsed.length) {
+      throw new Error(`${parsed} has duplicate ids.`);
+    }
+  }
 }
 
 export default Utils;

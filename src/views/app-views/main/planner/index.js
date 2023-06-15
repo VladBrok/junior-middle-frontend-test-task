@@ -1,5 +1,5 @@
 import { saveAs } from "file-saver";
-import { Image, Button, Upload } from "antd";
+import { Image, Button, Upload, notification } from "antd";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { TABLE_DRAG_ITEM } from "constants/PlannerConstant";
@@ -250,10 +250,31 @@ const Planner = () => {
   const handleImportChange = async ({ file }) => {
     // TODO: handle ALL edge cases
 
-    const text = await file.originFileObj.text();
-    console.log(text); // TODO: remove
-    const parsed = JSON.parse(text);
-    console.log(parsed); // TODO: remove
+    let text;
+    try {
+      text = await file.originFileObj.text();
+    } catch {
+      // TODO: extract to "handleError" (console.error + notification)
+      notification.error({
+        message:
+          "Не удалось считать данные из файла. Попробуйте выбрать другой.",
+        duration: 0,
+      });
+      return;
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+      Utils.validateParsedPlannerData(parsed);
+    } catch {
+      notification.error({
+        message:
+          "Содержимое файла имеет некорректный формат. Попробуйте выбрать другой файл.",
+        duration: 0,
+      });
+      return;
+    }
 
     setAvailableTables(() =>
       Utils.getPlannerTables().filter(
