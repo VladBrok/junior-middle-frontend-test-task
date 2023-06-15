@@ -1,17 +1,7 @@
+import "./index.css";
 import { TABLE_DRAG_ITEM } from "constants/PlannerConstant";
 import { useDragLayer } from "react-dnd";
-import PlannerTable from "./PlannerTable";
-
-// TODO: move to .css
-const layerStyles = {
-  position: "fixed",
-  pointerEvents: "none",
-  zIndex: 100,
-  left: 0,
-  top: 0,
-  width: "100%",
-  height: "100%",
-};
+import PlannerTable from "../PlannerTable";
 
 function getItemStyles(initialOffset, currentOffset) {
   if (!initialOffset || !currentOffset) {
@@ -52,7 +42,7 @@ const CustomDragLayer = () => {
   }
 
   return (
-    <div style={layerStyles}>
+    <div className="custom-drag-layer__container">
       <div style={getItemStyles(initialOffset, currentOffset)}>
         {renderItem()}
       </div>
