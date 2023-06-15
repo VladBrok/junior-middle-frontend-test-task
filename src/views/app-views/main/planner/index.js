@@ -13,7 +13,6 @@ import {
   addAvailableTable,
   addBoardTable,
   initializePlanner,
-  moveTable,
   updateBoardTable,
 } from "redux/actions/Planner";
 
@@ -21,11 +20,6 @@ const Planner = () => {
   const store = useStore();
   const availableTables = useSelector((state) => state.planner.availableTables);
   const boardTables = useSelector((state) => state.planner.boardTables);
-
-  // TODO: move to another component
-  const move = (oldIdx, newIdx) => {
-    store.dispatch(moveTable(oldIdx, newIdx));
-  };
 
   const handleAvailableListDrop = (tableProps) => {
     if (!tableProps.isOnBoard) {
@@ -142,7 +136,6 @@ const Planner = () => {
               id={table.id}
               image={table.image}
               index={index}
-              move={move}
             />
           ))}
         </AvailableTables>
@@ -154,7 +147,6 @@ const Planner = () => {
               id={table.id}
               image={table.image}
               index={index}
-              move={move}
               isOnBoard={true}
               top={table.top}
               left={table.left}

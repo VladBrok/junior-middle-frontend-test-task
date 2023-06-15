@@ -1,17 +1,9 @@
 import {
-  MOVE_TABLE,
   ADD_AVAILABLE_TABLE,
   ADD_BOARD_TABLE,
   UPDATE_BOARD_TABLE,
   INITIALIZE_PLANNER,
 } from "redux/constants/Planner";
-
-export const moveTable = (oldIdx, newIdx) => {
-  return {
-    type: MOVE_TABLE,
-    payload: { oldIdx, newIdx },
-  };
-};
 
 export const addAvailableTable = (table) => {
   return {

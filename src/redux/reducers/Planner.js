@@ -3,7 +3,6 @@ import {
   ADD_AVAILABLE_TABLE,
   ADD_BOARD_TABLE,
   INITIALIZE_PLANNER,
-  MOVE_TABLE,
   UPDATE_BOARD_TABLE,
 } from "redux/constants/Planner";
 
@@ -14,13 +13,6 @@ const initState = {
 
 const planner = (state = initState, action) => {
   switch (action.type) {
-    case MOVE_TABLE: {
-      const { oldIdx, newIdx } = action.payload;
-      return {
-        ...state,
-        availableTables: Utils.moveItem(state.availableTables, oldIdx, newIdx),
-      };
-    }
     case ADD_AVAILABLE_TABLE: {
       return {
         ...state,
