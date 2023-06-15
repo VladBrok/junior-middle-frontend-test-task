@@ -9,52 +9,12 @@ import PlannerTable from "./PlannerTable";
 import AvailableTables from "./AvailableTables";
 import Board from "./Board";
 import { useSelector, useStore } from "react-redux";
-import {
-  addAvailableTable,
-  addBoardTable,
-  initializePlanner,
-  updateBoardTable,
-} from "redux/actions/Planner";
+import { initializePlanner } from "redux/actions/Planner";
 
 const Planner = () => {
   const store = useStore();
   const availableTables = useSelector((state) => state.planner.availableTables);
   const boardTables = useSelector((state) => state.planner.boardTables);
-
-  const handleAvailableListDrop = (tableProps) => {
-    if (!tableProps.isOnBoard) {
-      return;
-    }
-
-    const boardTable = boardTables.find((x) => x.id === tableProps.id);
-    Utils.assert(
-      boardTable,
-      `Table with id ${tableProps.id} is not found in boardTables.`
-    );
-
-    store.dispatch(addAvailableTable(boardTable));
-  };
-
-  const handleBoardDrop = (tableId, top, left) => {
-    const isFromAvailable = availableTables.some(
-      (table) => table.id === tableId
-    );
-
-    if (isFromAvailable) {
-      const table = availableTables.find((table) => table.id === tableId);
-      store.dispatch(addBoardTable(table, top, left));
-    }
-
-    const isFromBoard = boardTables.some((table) => table.id === tableId);
-    Utils.assert(
-      !isFromAvailable || !isFromBoard,
-      `The table with id ${tableId} is both on the board and in the list of available tables.`
-    );
-
-    if (isFromBoard) {
-      store.dispatch(updateBoardTable(tableId, top, left));
-    }
-  };
 
   const handleExportClick = () => {
     const data = boardTables.map((table) => ({
@@ -129,7 +89,7 @@ const Planner = () => {
       <DndProvider backend={HTML5Backend}>
         <CustomDragLayer />
 
-        <AvailableTables onDrop={handleAvailableListDrop}>
+        <AvailableTables>
           {availableTables.map((table, index) => (
             <PlannerTable
               key={table.id}
@@ -140,7 +100,7 @@ const Planner = () => {
           ))}
         </AvailableTables>
 
-        <Board onDrop={handleBoardDrop}>
+        <Board>
           {boardTables.map((table, index) => (
             <PlannerTable
               key={table.id}
