@@ -1,0 +1,9 @@
+.board__container {
+  background-color: black;
+  width: var(--planner-board-width);
+  height: var(--planner-board-height);
+  margin: 0 auto;
+  margin-top: 25px;
+  position: relative;
+  border-radius: 15px;
+}

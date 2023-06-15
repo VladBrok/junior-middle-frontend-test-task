@@ -44,7 +44,7 @@ const PlannerTable = ({
   return (
     <div
       ref={ref}
-      className={`planner__item ${isOnBoard ? "planner__item-board" : ""}`}
+      className={`planner-table ${isOnBoard ? "planner-table_board" : ""}`}
       style={{ opacity, top, left }}
     >
       <Image src={image} preview={false} />

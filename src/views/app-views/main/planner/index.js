@@ -1,4 +1,3 @@
-import "./index.css";
 import { saveAs } from "file-saver";
 import { Button, Upload } from "antd";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
@@ -10,8 +9,6 @@ import CustomDragLayer from "./CustomDragLayer";
 import PlannerTable from "./PlannerTable";
 import AvailableTables from "./AvailableTables";
 import Board from "./Board";
-
-// TODO: split all components into multiple files (don't forget about moving css)
 
 const Planner = () => {
   const [availableTables, setAvailableTables] = useState(() =>

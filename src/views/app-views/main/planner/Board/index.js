@@ -43,7 +43,7 @@ const Board = ({ children, onDrop }) => {
 
   return (
     <div
-      className="planner__board"
+      className="board__container"
       ref={(el) => {
         ref.current = el;
         drop(el);

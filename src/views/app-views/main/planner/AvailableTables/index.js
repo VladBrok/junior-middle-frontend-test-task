@@ -11,7 +11,7 @@ const AvailableTables = ({ children, onDrop }) => {
   });
 
   return (
-    <div ref={drop} className="planner__list-container">
+    <div ref={drop} className="available-tables__container">
       {children}
     </div>
   );

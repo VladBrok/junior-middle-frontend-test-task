@@ -146,7 +146,7 @@ export class UserList extends Component {
         dataIndex: "actions",
         render: (_, elm) => (
           <div className="text-right">
-            <Tooltip title="View">
+            <Tooltip title="Просмотр">
               <Button
                 type="primary"
                 className="mr-2"
@@ -157,7 +157,7 @@ export class UserList extends Component {
                 size="small"
               />
             </Tooltip>
-            <Tooltip title="Delete">
+            <Tooltip title="Удалить">
               <Button
                 danger
                 icon={<DeleteOutlined />}

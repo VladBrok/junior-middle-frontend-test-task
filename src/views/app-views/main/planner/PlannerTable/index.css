@@ -1,0 +1,18 @@
+.planner-table {
+  width: var(--planner-table-size);
+  height: var(--planner-table-size);
+  border: 1px solid white;
+}
+
+.planner-table .ant-image-img,
+.planner-table .ant-image {
+  height: 100%;
+}
+
+.planner-table:hover {
+  cursor: grab;
+}
+
+.planner-table_board {
+  position: absolute;
+}
