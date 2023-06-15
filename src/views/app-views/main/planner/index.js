@@ -1,7 +1,6 @@
 import { saveAs } from "file-saver";
 import { Button, Upload } from "antd";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
-import { useState } from "react";
 import Utils from "utils";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -9,16 +8,23 @@ import CustomDragLayer from "./CustomDragLayer";
 import PlannerTable from "./PlannerTable";
 import AvailableTables from "./AvailableTables";
 import Board from "./Board";
+import { useSelector, useStore } from "react-redux";
+import {
+  addAvailableTable,
+  addBoardTable,
+  initializePlanner,
+  moveTable,
+  updateBoardTable,
+} from "redux/actions/Planner";
 
 const Planner = () => {
-  const [availableTables, setAvailableTables] = useState(() =>
-    Utils.getPlannerTables()
-  );
-  const [boardTables, setBoardTables] = useState([]);
+  const store = useStore();
+  const availableTables = useSelector((state) => state.planner.availableTables);
+  const boardTables = useSelector((state) => state.planner.boardTables);
 
-  const moveTable = (oldIdx, newIdx) => {
-    const tables = Utils.moveItem(availableTables, oldIdx, newIdx);
-    setAvailableTables(tables);
+  // TODO: move to another component
+  const move = (oldIdx, newIdx) => {
+    store.dispatch(moveTable(oldIdx, newIdx));
   };
 
   const handleAvailableListDrop = (tableProps) => {
@@ -32,8 +38,7 @@ const Planner = () => {
       `Table with id ${tableProps.id} is not found in boardTables.`
     );
 
-    setBoardTables((prev) => prev.filter((x) => x.id !== tableProps.id));
-    setAvailableTables((prev) => [...prev, boardTable]);
+    store.dispatch(addAvailableTable(boardTable));
   };
 
   const handleBoardDrop = (tableId, top, left) => {
@@ -43,8 +48,7 @@ const Planner = () => {
 
     if (isFromAvailable) {
       const table = availableTables.find((table) => table.id === tableId);
-      setAvailableTables((prev) => prev.filter((x) => x.id !== tableId));
-      setBoardTables((prev) => [...prev, { ...table, top, left }]);
+      store.dispatch(addBoardTable(table, top, left));
     }
 
     const isFromBoard = boardTables.some((table) => table.id === tableId);
@@ -54,10 +58,7 @@ const Planner = () => {
     );
 
     if (isFromBoard) {
-      const table = boardTables.find((table) => table.id === tableId);
-      setBoardTables((prev) =>
-        prev.map((x) => (x === table ? { ...x, top, left } : x))
-      );
+      store.dispatch(updateBoardTable(tableId, top, left));
     }
   };
 
@@ -99,17 +100,7 @@ const Planner = () => {
       return;
     }
 
-    setAvailableTables(() =>
-      Utils.getPlannerTables().filter(
-        (table) => !parsed.find((x) => x.id === table.id)
-      )
-    );
-    setBoardTables(() => [
-      ...parsed.map((table) => ({
-        ...table,
-        image: Utils.getTableImage(table.typeId),
-      })),
-    ]);
+    store.dispatch(initializePlanner(parsed));
   };
 
   return (
@@ -151,7 +142,7 @@ const Planner = () => {
               id={table.id}
               image={table.image}
               index={index}
-              move={moveTable}
+              move={move}
             />
           ))}
         </AvailableTables>
@@ -163,7 +154,7 @@ const Planner = () => {
               id={table.id}
               image={table.image}
               index={index}
-              move={moveTable}
+              move={move}
               isOnBoard={true}
               top={table.top}
               left={table.left}
