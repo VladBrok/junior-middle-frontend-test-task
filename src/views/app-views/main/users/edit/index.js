@@ -19,6 +19,7 @@ import "./index.css";
 import userService from "services/UserService";
 import { userAdapter } from "./adapters";
 import { withRouter } from "react-router-dom/cjs/react-router-dom.min";
+import Utils from "utils";
 
 export class EditProfile extends Component {
   state = {
@@ -50,12 +51,10 @@ export class EditProfile extends Component {
         isError: false,
       });
     } catch (e) {
-      notification.error({
-        message:
-          "Не удалось получить данные о клиенте. Попробуйте перезагрузить страницу.",
-        duration: 0,
-      });
-      console.error(e);
+      Utils.handleError(
+        e,
+        "Не удалось получить данные о клиенте. Попробуйте перезагрузить страницу."
+      );
       this.setState({ isError: true });
     } finally {
       this.setState({
@@ -81,10 +80,7 @@ export class EditProfile extends Component {
         this.props.history.push("..");
         notification.success({ message: "Данные сохранены.", duration: 2 });
       } catch (e) {
-        notification.error({
-          message: "Не удалось сохранить данные. Попробуйте позже.",
-          duration: 0,
-        });
+        Utils.handleError(e, "Не удалось сохранить данные. Попробуйте позже.");
         console.error(e);
       } finally {
         this.setState({ isSaving: false });

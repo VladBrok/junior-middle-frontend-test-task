@@ -1,5 +1,5 @@
 import { saveAs } from "file-saver";
-import { Image, Button, Upload, notification } from "antd";
+import { Image, Button, Upload } from "antd";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { TABLE_DRAG_ITEM } from "constants/PlannerConstant";
@@ -253,13 +253,11 @@ const Planner = () => {
     let text;
     try {
       text = await file.originFileObj.text();
-    } catch {
-      // TODO: extract to "handleError" (console.error + notification)
-      notification.error({
-        message:
-          "Не удалось считать данные из файла. Попробуйте выбрать другой.",
-        duration: 0,
-      });
+    } catch (e) {
+      Utils.handleError(
+        e,
+        "Не удалось считать данные из файла. Попробуйте выбрать другой."
+      );
       return;
     }
 
@@ -267,12 +265,11 @@ const Planner = () => {
     try {
       parsed = JSON.parse(text);
       Utils.validateParsedPlannerData(parsed);
-    } catch {
-      notification.error({
-        message:
-          "Содержимое файла имеет некорректный формат. Попробуйте выбрать другой файл.",
-        duration: 0,
-      });
+    } catch (e) {
+      Utils.handleError(
+        e,
+        "Содержимое файла имеет некорректный формат. Попробуйте выбрать другой файл."
+      );
       return;
     }
 

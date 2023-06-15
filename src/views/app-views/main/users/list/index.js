@@ -10,6 +10,7 @@ import userService from "services/UserService";
 import "./index.css";
 import { withRouter } from "react-router-dom/cjs/react-router-dom.min";
 import { APP_PREFIX_PATH } from "configs/AppConfig";
+import Utils from "utils";
 
 export class UserList extends Component {
   state = {
@@ -33,12 +34,9 @@ export class UserList extends Component {
         users: usersAdapter(users),
       });
     } catch (e) {
-      notification.error({
-        message:
-          "Не удалось получить список клиентов. Попробуйте перезагрузить страницу.",
-        duration: 0,
-      });
-      console.error(e);
+      Utils.handleError(
+        "Не удалось получить список клиентов. Попробуйте перезагрузить страницу."
+      );
     } finally {
       this.setState({
         isLoading: false,

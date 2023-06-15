@@ -1,3 +1,4 @@
+import { notification } from "antd";
 import plannerTables from "assets/data/planner-tables.data.json";
 
 class Utils {
@@ -304,6 +305,11 @@ class Utils {
     if (idsSet.size !== parsed.length) {
       throw new Error(`${parsed} has duplicate ids.`);
     }
+  }
+
+  static handleError(e, messageForUser) {
+    console.error(e);
+    notification.error({ message: messageForUser, duration: 0 });
   }
 }
 
