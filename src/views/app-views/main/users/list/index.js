@@ -35,6 +35,7 @@ export class UserList extends Component {
       });
     } catch (e) {
       Utils.handleError(
+        e,
         "Не удалось получить список клиентов. Попробуйте перезагрузить страницу."
       );
     } finally {
