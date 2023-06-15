@@ -95,47 +95,6 @@ function PlannerTable({
 }) {
   const ref = useRef();
 
-  const [{ handlerId }, drop] = useDrop({
-    accept: TABLE_DRAG_ITEM,
-    collect(monitor) {
-      return {
-        handlerId: monitor.getHandlerId(),
-      };
-    },
-    hover(item, monitor) {
-      if (!ref.current || item.isOnBoard) {
-        return;
-      }
-
-      const dragIndex = item.index;
-      const hoverIndex = index;
-
-      if (dragIndex === hoverIndex) {
-        return;
-      }
-
-      const hoverBoundingRect = ref.current?.getBoundingClientRect();
-      const hoverMiddleX =
-        (hoverBoundingRect.right - hoverBoundingRect.left) / 2;
-      const clientOffset = monitor.getClientOffset();
-      const hoverClientX = clientOffset.x - hoverBoundingRect.left;
-      const isDraggingLeftwards = dragIndex > hoverIndex;
-      const isDraggingRightwards = dragIndex < hoverIndex;
-      const isCrossedHalfLeftwards = hoverClientX < hoverMiddleX;
-      const isCrossedHalfRightwards = hoverClientX > hoverMiddleX;
-
-      if (
-        (isDraggingLeftwards && !isCrossedHalfLeftwards) ||
-        (isDraggingRightwards && !isCrossedHalfRightwards)
-      ) {
-        return;
-      }
-
-      move(dragIndex, hoverIndex);
-      item.index = hoverIndex;
-    },
-  });
-
   const [{ isDragging }, drag, preview] = useDrag({
     type: TABLE_DRAG_ITEM,
     item: () => ({
@@ -144,6 +103,7 @@ function PlannerTable({
       isOnBoard,
       image,
       move,
+      el: ref.current,
     }),
     collect(monitor) {
       return {
@@ -156,18 +116,17 @@ function PlannerTable({
     preview(getEmptyImage(), { captureDraggingState: true });
   }, [preview]);
 
-  drag(drop(ref));
+  drag(ref);
 
   const opacity = isDragging ? 0 : 1;
 
   return (
     <div
       ref={ref}
-      data-handler-id={handlerId}
       className={`planner__item ${isOnBoard ? "planner__item-board" : ""}`}
       style={{ opacity, top, left }}
     >
-      <Image src={image} />
+      <Image src={image} preview={false} />
     </div>
   );
 }
@@ -175,33 +134,40 @@ function PlannerTable({
 const Board = ({ children, onDrop }) => {
   const ref = useRef();
 
-  const [, drop] = useDrop({
-    accept: TABLE_DRAG_ITEM,
-    drop(item, monitor) {
-      // TODO: this is weird (happens when hovering)
-      // TODO: mb force this component to rerender so that getClientOffset updates ???????
-      if (!monitor.getClientOffset()) {
-        return;
-      }
+  const [, drop] = useDrop(
+    () => ({
+      accept: TABLE_DRAG_ITEM,
+      drop(item, monitor) {
+        const offsetX =
+          monitor.getInitialClientOffset().x -
+          item.el.getBoundingClientRect().left;
+        const offsetY =
+          monitor.getInitialClientOffset().y -
+          item.el.getBoundingClientRect().top;
+        const tableRectLeft = monitor.getClientOffset().x - offsetX;
+        const tableRectTop = monitor.getClientOffset().y - offsetY;
+        const tableRectWidth = item.el.getBoundingClientRect().width;
+        const tableRectHeight = item.el.getBoundingClientRect().height;
+        const boardRect = ref.current.getBoundingClientRect();
 
-      const boardRect = ref.current.getBoundingClientRect();
+        const top = tableRectTop - boardRect.top;
+        const left = tableRectLeft - boardRect.left;
+        const isOutsideOfBoard =
+          top < 0 ||
+          top > boardRect.height - tableRectHeight ||
+          left < 0 ||
+          left > boardRect.width - tableRectWidth;
 
-      // TODO: instead of monitor.getClientOffset we should use tableRect.top & tableRect.left, but they are not updated. Find a way to deal with it
+        if (isOutsideOfBoard) {
+          return;
+        }
 
-      const top = monitor.getClientOffset().y - boardRect.top;
-      const left = monitor.getClientOffset().x - boardRect.left;
-      const isOutsideOfBoard =
-        top < 0 || top > boardRect.height || left < 0 || left > boardRect.width;
-
-      // TODO: also check for intersection with others
-      if (isOutsideOfBoard) {
-        return;
-      }
-
-      onDrop(item.id, top, left);
-      return undefined;
-    },
-  });
+        onDrop(item.id, top, left);
+        return undefined;
+      },
+    }),
+    [onDrop]
+  );
 
   return (
     <div

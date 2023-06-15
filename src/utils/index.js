@@ -271,19 +271,6 @@ class Utils {
     return result;
   }
 
-  // TODO: remove / fix
-  static intersect(container, target) {
-    const containerRect = container.getBoundingClientRect();
-    const targetRect = target.getBoundingClientRect();
-
-    return (
-      containerRect.bottom > targetRect.top &&
-      containerRect.right > targetRect.left &&
-      containerRect.top < targetRect.bottom &&
-      containerRect.left < targetRect.right
-    );
-  }
-
   static getTableImage(typeId) {
     return typeId === "1"
       ? "/img/planner/table-dark.png"

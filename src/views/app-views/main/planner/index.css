@@ -14,11 +14,7 @@
 .planner__item {
   width: var(--planner-table-size);
   height: var(--planner-table-size);
-  padding: 10px;
-}
-
-.planner__item .ant-image-mask {
-  display: none;
+  border: 1px solid white;
 }
 
 .planner__item .ant-image-img,
@@ -41,4 +37,5 @@
   margin: 0 auto;
   margin-top: 25px;
   position: relative;
+  border-radius: 15px;
 }
